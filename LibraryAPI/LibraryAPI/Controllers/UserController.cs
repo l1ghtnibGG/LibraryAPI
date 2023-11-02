@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Models.DTOModels;
+using LibraryAPI.Models.DTOModels.UsersDto;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,10 +20,10 @@ public class UserController : Controller
     /// </summary>
     /// <param name="registerUserDto">The user information of registration</param>
     /// <returns>JWT token.</returns>
-    [HttpPost("Register")]
-    public ActionResult Register([FromBody]RegisterUserDto registerUserDto)
+    [HttpPost("register")]
+    public async Task<ActionResult> Register([FromBody]RegisterUserDto registerUserDto)
     {
-        var token = _userService.Register(registerUserDto);
+        var token = await _userService.Register(registerUserDto);
 
         if (token == null)
             return BadRequest(token);
@@ -35,7 +36,7 @@ public class UserController : Controller
     /// </summary>
     /// <param name="loginUserDto">The user information of login.</param>
     /// <returns>Jwt token</returns>
-    [HttpPost("Login")]
+    [HttpPost("login")]
     public ActionResult Login([FromBody]LoginUserDto loginUserDto)
     {
         var token = _userService.Login(loginUserDto);

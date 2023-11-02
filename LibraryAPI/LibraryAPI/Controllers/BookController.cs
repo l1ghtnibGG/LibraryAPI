@@ -1,5 +1,7 @@
 ﻿using LibraryAPI.Models;
 using LibraryAPI.Models.DTOModels;
+using LibraryAPI.Models.DTOModels.BooksDto;
+using LibraryAPI.Models.Pagination;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LibraryAPI.Controllers;
 
 [ApiController]
-[Route("[controller]/Api/")]
+[Route("api/")]
 public class BookController : ControllerBase
 {
     private readonly IBookService _bookService;
@@ -20,16 +22,17 @@ public class BookController : ControllerBase
     /// <summary>
     /// Get all books
     /// </summary>
-    [HttpGet("Books")]
-    public ActionResult<IQueryable<Book>> GetBooks() => Ok(_bookService.GetBooks());
+    [HttpGet("books")]
+    public ActionResult<IQueryable<Book>> GetBooks([FromQuery]PaginationParameters paginationParameters) => 
+        Ok(_bookService.GetBooks(paginationParameters));
 
     /// <summary>
     /// Get a book by ID
     /// </summary>
-    [HttpGet("Book/Id/{id:guid}")]
-    public ActionResult<Book> GetBookById(Guid id)
+    [HttpGet("book/id/{id:guid}")]
+    public async Task<ActionResult<Book>> GetBookById(Guid id)
     {
-        var book = _bookService.GetBookById(id);
+        var book = await _bookService.GetBookById(id);
         
         if (book == null)
             return BadRequest(book);
@@ -40,10 +43,10 @@ public class BookController : ControllerBase
     /// <summary>
     /// Get a book by ISBN
     /// </summary>
-    [HttpGet("Book/Isbn/{isbn}")]
-    public ActionResult<Book> GetBookByIsbn(string isbn)
+    [HttpGet("book/isbn/{isbn}")]
+    public async Task<ActionResult<Book>> GetBookByIsbn(string isbn)
     {
-        var book = _bookService.GetBookByIsbn(isbn);
+        var book = await _bookService.GetBookByIsbn(isbn);
         
         if (book == null)
             return BadRequest(book);
@@ -55,10 +58,10 @@ public class BookController : ControllerBase
     /// Add a book
     /// </summary>
     [Authorize]
-    [HttpPost("Book/Add")]
-    public ActionResult<Book> AddBook(Book item)
+    [HttpPost("book/add")]
+    public async Task<ActionResult<Book>> AddBook(BookDto item)
     {
-        var book = _bookService.AddBook(item);
+        var book = await _bookService.AddBook(item);
         
         if (book == null)
             return BadRequest(book);
@@ -70,10 +73,10 @@ public class BookController : ControllerBase
     /// Edit a book
     /// </summary>
     [Authorize]
-    [HttpPost("Book/Edit/{id:guid}")]
-    public ActionResult<Book> EditBook(Guid id, Book item)
+    [HttpPost("book/edit/{id:guid}")]
+    public async Task<ActionResult<Book>> EditBook(Guid id, BookDto item)
     {
-        var book = _bookService.EditBook(id, item);
+        var book = await _bookService.EditBook(id, item);
         
         if (book == null)
             return BadRequest(book);
@@ -85,10 +88,10 @@ public class BookController : ControllerBase
     /// Delete a book
     /// </summary>
     [Authorize]
-    [HttpPost("Book/Delete/{id:guid}")]
-    public ActionResult<string> DeleteBook(Guid id)
+    [HttpPost("book/delete/{id:guid}")]
+    public async Task<ActionResult<string>> DeleteBook(Guid id)
     {
-        var book = _bookService.DeleteBook(id);
+        var book = await _bookService.DeleteBook(id);
         
         if (book == "Book doesn't exist")
             return BadRequest(book);

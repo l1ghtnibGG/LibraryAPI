@@ -1,18 +1,20 @@
 ﻿using LibraryAPI.Models;
+using LibraryAPI.Models.DTOModels.BooksDto;
+using LibraryAPI.Models.Pagination;
 
 namespace LibraryAPI.Services;
 
 public interface IBookService
 {
-    public IQueryable<Book> GetBooks();
+    public IQueryable<Book> GetBooks(PaginationParameters paginationParameters);
 
-    public Book? GetBookById(Guid id);
+    public Task<Book?> GetBookById(Guid id);
 
-    public Book? GetBookByIsbn(string isbn);
+    public Task<Book?> GetBookByIsbn(string isbn);
 
-    public Book? AddBook(Book book);
+    public Task<Book?> AddBook(BookDto book);
 
-    public Book? EditBook(Guid id, Book book);
+    public Task<Book?> EditBook(Guid id, BookDto book);
 
-    public string DeleteBook(Guid id);
+    public Task<string> DeleteBook(Guid id);
 }

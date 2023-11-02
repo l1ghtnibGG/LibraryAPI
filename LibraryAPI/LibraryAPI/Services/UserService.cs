@@ -2,6 +2,7 @@
 using AutoMapper;
 using LibraryAPI.Models;
 using LibraryAPI.Models.DTOModels;
+using LibraryAPI.Models.DTOModels.UsersDto;
 using LibraryAPI.Models.Repositories;
 
 namespace LibraryAPI.Services;
@@ -22,7 +23,7 @@ public class UserService : IUserService
         _jwtToken = jwtToken;
     }
     
-    public string? Register(RegisterUserDto registerUserDto)
+    public async Task<string?> Register(RegisterUserDto registerUserDto)
     {
         var user = _mapper.Map<User>(registerUserDto);
 
@@ -32,7 +33,7 @@ public class UserService : IUserService
             return null;
         }
 
-        if (_userContext.AddItem(user) == null)
+        if ( await _userContext.AddItem(user) == null)
         {
             _logger.Log(LogLevel.Error, "Incorrect input");
             return null;

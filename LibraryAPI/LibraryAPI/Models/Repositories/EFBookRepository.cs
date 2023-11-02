@@ -1,4 +1,7 @@
-﻿namespace LibraryAPI.Models.Repositories;
+﻿using LibraryAPI.Models.Pagination;
+using Microsoft.EntityFrameworkCore;
+
+namespace LibraryAPI.Models.Repositories;
 
 public class EFBookRepository : ILibraryRepository<Book>
 {
@@ -11,22 +14,27 @@ public class EFBookRepository : ILibraryRepository<Book>
 
     IQueryable<Book> ILibraryRepository<Book>.GetAll => _context.Books;
 
-    public Book? GetItemById(Guid id) => _context.Books.FirstOrDefault(x => x.Id == id);
+    public IQueryable<Book> GetAllWithPagination(PaginationParameters pagination) =>
+        _context.Books.OrderBy(x => x.Name)
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize);
 
-    public Book? GetBookByIsbn(string isbn) => _context.Books.FirstOrDefault(x => x.ISBN == isbn);
+    public async Task<Book?> GetItemById(Guid id) => await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
 
-    public Book? AddItem(Book? item)
+    public async Task<Book?> GetBookByIsbn(string isbn) => await _context.Books.FirstOrDefaultAsync(x => x.ISBN == isbn);
+
+    public async Task<Book?> AddItem(Book? item)
     {
         if (item == null)
             return null;
 
         _context.Add(item);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return item;
     }
 
-    public Book? EditItem(Guid id, Book item)
+    public async Task<Book?> EditItem(Guid id, Book item)
     {
         var book = _context.Books.FirstOrDefault(x => x.Id == id);
         
@@ -34,20 +42,20 @@ public class EFBookRepository : ILibraryRepository<Book>
             return null;
 
         _context.Books.Update(item);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return item;
     }
 
-    public string DeleteItem(Guid id)
+    public async Task<string> DeleteItem(Guid id)
     {
-        var book = _context.Books.FirstOrDefault(x => x.Id == id);
+        var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
 
         if (book == null)
             return "Book doesn't exist";
 
         _context.Remove(book);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return $"{book.Name} was successfully deleted";
     }

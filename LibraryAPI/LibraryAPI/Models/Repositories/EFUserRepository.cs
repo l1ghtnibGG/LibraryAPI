@@ -1,4 +1,7 @@
-﻿namespace LibraryAPI.Models.Repositories;
+﻿using LibraryAPI.Models.Pagination;
+using Microsoft.EntityFrameworkCore;
+
+namespace LibraryAPI.Models.Repositories;
 
 public class EFUserRepository : ILibraryRepository<User>
 {
@@ -11,25 +14,30 @@ public class EFUserRepository : ILibraryRepository<User>
 
     IQueryable<User> ILibraryRepository<User>.GetAll => _context.Users;
 
-    public User? GetItemById(Guid id) => _context.Users.FirstOrDefault(x => x.Id == id);
+    public IQueryable<User> GetAllWithPagination(PaginationParameters pagination) =>
+        _context.Users.OrderBy(x => x.Email)
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize);
 
-    public User? GetBookByIsbn(string isbn)
+    public async Task<User?> GetItemById(Guid id) => await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+    public Task<User?> GetBookByIsbn(string isbn)
     {
         throw new NotImplementedException();
     }
 
-    public User? AddItem(User? item)
+    public async Task<User?> AddItem(User? item)
     {
         if (item == null)
             return null;
 
         _context.Add(item);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return item;
     }
 
-    public User? EditItem(Guid id, User item)
+    public async Task<User?>EditItem(Guid id, User item)
     {
         var user = _context.Users.FirstOrDefault(x => x.Id == id);
         
@@ -37,12 +45,12 @@ public class EFUserRepository : ILibraryRepository<User>
             return null;
 
         _context.Users.Update(item);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return user;
     }
 
-    public string DeleteItem(Guid id)
+    public async Task<string> DeleteItem(Guid id)
     {
         var user = _context.Users.FirstOrDefault(x => x.Id == id);
 
@@ -50,7 +58,7 @@ public class EFUserRepository : ILibraryRepository<User>
             return "User doesn't exist";
 
         _context.Remove(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return $"{user.Name} was successfully deleted";
     }
