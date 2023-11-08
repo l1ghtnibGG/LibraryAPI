@@ -38,5 +38,5 @@ public class BookService : IBookService
         return await _bookContext.EditItem(id, book);
     }
 
-    public async Task<string> DeleteBook(Guid id) => await _bookContext.DeleteItem(id);
+    public async Task<Book?> DeleteBook(Guid id) => await _bookContext.DeleteItem(id);
 }

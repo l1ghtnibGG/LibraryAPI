@@ -50,16 +50,16 @@ public class EFUserRepository : ILibraryRepository<User>
         return user;
     }
 
-    public async Task<string> DeleteItem(Guid id)
+    public async Task<User?> DeleteItem(Guid id)
     {
         var user = _context.Users.FirstOrDefault(x => x.Id == id);
 
         if (user == null)
-            return "User doesn't exist";
+            return null;
 
         _context.Remove(user);
         await _context.SaveChangesAsync();
 
-        return $"{user.Name} was successfully deleted";
+        return user;
     }
 }

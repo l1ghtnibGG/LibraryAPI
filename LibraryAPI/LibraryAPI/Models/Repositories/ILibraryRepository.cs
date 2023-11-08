@@ -16,5 +16,5 @@ public interface ILibraryRepository<T> where T : class
 
     public Task<T?> EditItem(Guid id, T item);
 
-    public Task<string> DeleteItem(Guid id);
+    public Task<T?> DeleteItem(Guid id);
 }

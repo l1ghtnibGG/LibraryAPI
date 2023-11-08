@@ -47,16 +47,16 @@ public class EFBookRepository : ILibraryRepository<Book>
         return item;
     }
 
-    public async Task<string> DeleteItem(Guid id)
+    public async Task<Book?> DeleteItem(Guid id)
     {
         var book = await _context.Books.FirstOrDefaultAsync(x => x.Id == id);
 
         if (book == null)
-            return "Book doesn't exist";
+            return null;
 
         _context.Remove(book);
         await _context.SaveChangesAsync();
 
-        return $"{book.Name} was successfully deleted";
+        return book;
     }
 }

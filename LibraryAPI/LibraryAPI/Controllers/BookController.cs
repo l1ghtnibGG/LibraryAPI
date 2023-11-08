@@ -89,11 +89,11 @@ public class BookController : ControllerBase
     /// </summary>
     [Authorize]
     [HttpPost("book/delete/{id:guid}")]
-    public async Task<ActionResult<string>> DeleteBook(Guid id)
+    public async Task<ActionResult<Book>> DeleteBook(Guid id)
     {
         var book = await _bookService.DeleteBook(id);
         
-        if (book == "Book doesn't exist")
+        if (book == null)
             return BadRequest(book);
 
         return Ok(book);

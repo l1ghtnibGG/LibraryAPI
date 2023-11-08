@@ -16,5 +16,5 @@ public interface IBookService
 
     public Task<Book?> EditBook(Guid id, BookDto book);
 
-    public Task<string> DeleteBook(Guid id);
+    public Task<Book?> DeleteBook(Guid id);
 }
