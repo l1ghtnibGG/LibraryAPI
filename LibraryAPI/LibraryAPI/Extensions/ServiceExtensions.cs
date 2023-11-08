@@ -1,9 +1,15 @@
 ﻿using System.Reflection;
 using System.Text;
+using BusinessLogic.DTOModels.BooksDto;
+using BusinessLogic.Services;
+using BusinessLogic.Services.Implementations;
+using BusinessLogic.Services.Interfaces;
+using Entities.Models;
+using Entities.Repositories;
+using Entities.Repositories.Implementations;
+using Entities.Repositories.Interfaces;
+using FluentValidation;
 using FluentValidation.AspNetCore;
-using LibraryAPI.Models;
-using LibraryAPI.Models.Repositories;
-using LibraryAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -26,13 +32,10 @@ public static class ServiceExtensions
 
     public static void AddControllersWithValidation(this IServiceCollection services)
     {
-        services.AddControllers() 
-            .AddFluentValidation(options =>
-            {
-                options.ImplicitlyValidateChildProperties = true;
-                options.ImplicitlyValidateRootCollectionElements = true;
-                options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            });
+        services.AddControllers();
+        services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssembly(typeof(BookAddDto).Assembly);
+        services.AddValidatorsFromAssembly(typeof(BookEditDto).Assembly);
     }
 
     public static void AddSwaggerWithJwt(this IServiceCollection services)

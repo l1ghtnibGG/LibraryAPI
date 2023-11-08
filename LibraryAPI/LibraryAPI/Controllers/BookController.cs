@@ -1,8 +1,8 @@
-﻿using LibraryAPI.Models;
-using LibraryAPI.Models.DTOModels;
-using LibraryAPI.Models.DTOModels.BooksDto;
-using LibraryAPI.Models.Pagination;
-using LibraryAPI.Services;
+﻿using BusinessLogic.DTOModels.BooksDto;
+using BusinessLogic.Services;
+using BusinessLogic.Services.Interfaces;
+using Entities.Models;
+using Entities.Repositories.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,7 +59,7 @@ public class BookController : ControllerBase
     /// </summary>
     [Authorize]
     [HttpPost("book/add")]
-    public async Task<ActionResult<Book>> AddBook(BookDto item)
+    public async Task<ActionResult<Book>> AddBook(BookAddDto item)
     {
         var book = await _bookService.AddBook(item);
         
@@ -74,7 +74,7 @@ public class BookController : ControllerBase
     /// </summary>
     [Authorize]
     [HttpPost("book/edit/{id:guid}")]
-    public async Task<ActionResult<Book>> EditBook(Guid id, BookDto item)
+    public async Task<ActionResult<Book>> EditBook(Guid id, BookEditDto item)
     {
         var book = await _bookService.EditBook(id, item);
         

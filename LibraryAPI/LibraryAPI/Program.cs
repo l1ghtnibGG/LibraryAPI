@@ -1,5 +1,5 @@
-using LibraryAPI.AutoMapperHelper;
-using LibraryAPI.Models.Data;
+using BusinessLogic.AutoMapperHelper;
+using Entities.Data;
 using LibraryAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

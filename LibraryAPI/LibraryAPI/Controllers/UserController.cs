@@ -1,6 +1,6 @@
-﻿using LibraryAPI.Models.DTOModels;
+﻿using BusinessLogic.Services.Interfaces;
+using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.DTOModels.UsersDto;
-using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers;
