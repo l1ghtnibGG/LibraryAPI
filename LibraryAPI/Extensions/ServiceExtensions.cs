@@ -1,15 +1,17 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using BusinessLogic.DTOModels.BooksDto;
-using BusinessLogic.Services;
+using BusinessLogic.DTOModels.BooksDto.Validation;
+using BusinessLogic.DTOModels.UsersDto;
+using BusinessLogic.DTOModels.UsersDto.Validation;
 using BusinessLogic.Services.Implementations;
 using BusinessLogic.Services.Interfaces;
+using Entities.EF;
 using Entities.Models;
-using Entities.Repositories;
 using Entities.Repositories.Implementations;
 using Entities.Repositories.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using LibraryAPI.ExceptionsHandler;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,12 +32,13 @@ public static class ServiceExtensions
         });
     }
 
-    public static void AddControllersWithValidation(this IServiceCollection services)
+    public static void AddFluentValidation(this IServiceCollection services)
     {
-        services.AddControllers();
         services.AddFluentValidationAutoValidation();
-        services.AddValidatorsFromAssembly(typeof(BookAddDto).Assembly);
-        services.AddValidatorsFromAssembly(typeof(BookEditDto).Assembly);
+        services.AddValidatorsFromAssembly(typeof(RegisterUserDtoValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(LoginUserDtoValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(BookAddDtoValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(BookEditDtoValidator).Assembly);
     }
 
     public static void AddSwaggerWithJwt(this IServiceCollection services)
@@ -45,13 +48,10 @@ public static class ServiceExtensions
             option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {
                 Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.Http,
                 Scheme = "Bearer",
-                BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
-                              "Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\n" +
-                              "Example: \"Bearer 1s21352\"",
+                Description = "JWT Authorization header using the Bearer scheme."
             });
             option.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
@@ -102,4 +102,14 @@ public static class ServiceExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
     }
+    
+    public static void AddUnitOfWork(this IServiceCollection services)
+    {
+        services.AddScoped<IUnitOfWork, EFUnitOfWork>();
+    }
+    
+    public static void UseExceptionHandlerMiddleware(this IApplicationBuilder app)  
+    {  
+        app.UseMiddleware<ExceptionHandlerMiddleware>();  
+    }  
 }

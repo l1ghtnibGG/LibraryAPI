@@ -1,8 +1,7 @@
 ﻿using BusinessLogic.DTOModels.BooksDto;
-using BusinessLogic.Services;
 using BusinessLogic.Services.Interfaces;
 using Entities.Models;
-using Entities.Repositories.Pagination;
+using Entities.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +34,7 @@ public class BookController : ControllerBase
         var book = await _bookService.GetBookById(id);
         
         if (book == null)
-            return BadRequest(book);
+            return BadRequest();
 
         return Ok(book);
     } 
@@ -49,7 +48,7 @@ public class BookController : ControllerBase
         var book = await _bookService.GetBookByIsbn(isbn);
         
         if (book == null)
-            return BadRequest(book);
+            return BadRequest();
 
         return Ok(book);
     } 
@@ -64,7 +63,7 @@ public class BookController : ControllerBase
         var book = await _bookService.AddBook(item);
         
         if (book == null)
-            return BadRequest(book);
+            return BadRequest();
 
         return Ok(book);
     } 
@@ -79,7 +78,7 @@ public class BookController : ControllerBase
         var book = await _bookService.EditBook(id, item);
         
         if (book == null)
-            return BadRequest(book);
+            return BadRequest();
 
         return Ok(book);
     } 
@@ -94,7 +93,7 @@ public class BookController : ControllerBase
         var book = await _bookService.DeleteBook(id);
         
         if (book == null)
-            return BadRequest(book);
+            return BadRequest();
 
         return Ok(book);
     } 

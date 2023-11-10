@@ -61,7 +61,7 @@ If login successfully the server will return a Jwt Token. Copy the token.
 ### Authentication
 
 1. Find the green "Authorize" button at the top of the page.
-2. Click on it and insert 'Bearer' [space] and then your JWT Token in the text input below.
+2. Click on it and insert JWT Token in the text input below.
 3. Click "Authorize".
 
 If your token is valid, you will be able to perform Add, Edit, Delete operations.

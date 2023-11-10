@@ -1,11 +1,11 @@
-﻿using BusinessLogic.Services.Interfaces;
-using LibraryAPI.Models.DTOModels;
-using LibraryAPI.Models.DTOModels.UsersDto;
+﻿using BusinessLogic.DTOModels.UsersDto;
+using BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers;
 
-[Route("[controller]/")]
+[ApiController]
+[Route("user/")]
 public class UserController : Controller
 {
     private readonly IUserService _userService;
@@ -26,7 +26,7 @@ public class UserController : Controller
         var token = await _userService.Register(registerUserDto);
 
         if (token == null)
-            return BadRequest(token);
+            return BadRequest();
 
         return Ok(token);
     }
@@ -42,7 +42,7 @@ public class UserController : Controller
         var token = _userService.Login(loginUserDto);
 
         if (token == null)
-            return BadRequest(token);
+            return BadRequest();
 
         return Ok(token);
     }

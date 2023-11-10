@@ -7,19 +7,24 @@ var config = builder.Configuration;
 
 builder.Services.ConfigureSqlServerContext(config);
 
-builder.Services.AddControllersWithValidation();
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerWithJwt();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddUnitOfWork();
+builder.Services.AddServices();
 
 builder.Services.AddAuthenticationJwt(config);
 builder.Services.AddAuthorization();
 
-builder.Services.AddServices();
+builder.Services.AddFluentValidation();
+
+builder.Services.AddSwaggerWithJwt();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
+
+app.UseExceptionHandlerMiddleware();  
 
 if (app.Environment.IsDevelopment())
 {
